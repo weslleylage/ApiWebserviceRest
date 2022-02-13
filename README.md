@@ -2,4 +2,4 @@
 
 ## Ferramenta utilizada
 
-Postman
+Postman Version 7.36.5
