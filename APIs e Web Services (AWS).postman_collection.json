@@ -1,0 +1,478 @@
+{
+	"info": {
+		"_postman_id": "fa978916-87a6-480c-ae50-79e432c2f42b",
+		"name": "APIs e Web Services (AWS)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Twitter",
+			"item": [
+				{
+					"name": "Get a Tweet",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BearerTokenTwitter}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.twitter.com/2/tweets/:ID",
+							"protocol": "https",
+							"host": [
+								"api",
+								"twitter",
+								"com"
+							],
+							"path": [
+								"2",
+								"tweets",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "2112"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Multiple Tweets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BearerTokenTwitter}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.twitter.com/2/tweets?ids=20,1276501058211262464,1276420300641406976,1276346768490328064,1276301871515222017,1276175944105865216,1276009123876749312,1276009123620851712&tweet.fields=author_id,entities,attachments,conversation_id,created_at,referenced_tweets",
+							"protocol": "https",
+							"host": [
+								"api",
+								"twitter",
+								"com"
+							],
+							"path": [
+								"2",
+								"tweets"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "20,1276501058211262464,1276420300641406976,1276346768490328064,1276301871515222017,1276175944105865216,1276009123876749312,1276009123620851712"
+								},
+								{
+									"key": "tweet.fields",
+									"value": "author_id,entities,attachments,conversation_id,created_at,referenced_tweets"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Tweets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BearerTokenTwitter}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.twitter.com/2/lists/:ID/tweets",
+							"protocol": "https",
+							"host": [
+								"api",
+								"twitter",
+								"com"
+							],
+							"path": [
+								"2",
+								"lists",
+								":ID",
+								"tweets"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "1039"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Spotify",
+			"item": [
+				{
+					"name": "Obter Token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let keys = pm.environment.get(\"spotifyClientID\") + \":\" + pm.environment.get(\"spotifyClientSecret\");",
+									"let encodedKeys = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(keys));",
+									"// console.log(`Encoded value: ${encodedKeys}`);",
+									"pm.environment.set(\"encodedClientSpotify\", encodedKeys);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"bearerSpotify\", \"Bearer \" + jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{encodedClientSpotify}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://accounts.spotify.com/api/token?grant_type=client_credentials",
+							"protocol": "https",
+							"host": [
+								"accounts",
+								"spotify",
+								"com"
+							],
+							"path": [
+								"api",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Several Artists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearerSpotify}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.spotify.com/v1/artists?ids=2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6",
+							"protocol": "https",
+							"host": [
+								"api",
+								"spotify",
+								"com"
+							],
+							"path": [
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categorys Playlists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearerSpotify}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.spotify.com/v1/browse/categories/:categoryID/playlists",
+							"protocol": "https",
+							"host": [
+								"api",
+								"spotify",
+								"com"
+							],
+							"path": [
+								"v1",
+								"browse",
+								"categories",
+								":categoryID",
+								"playlists"
+							],
+							"variable": [
+								{
+									"key": "categoryID",
+									"value": "party"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Genre Seeds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{bearerSpotify}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.spotify.com/v1/recommendations/available-genre-seeds",
+							"protocol": "https",
+							"host": [
+								"api",
+								"spotify",
+								"com"
+							],
+							"path": [
+								"v1",
+								"recommendations",
+								"available-genre-seeds"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Marvel",
+			"item": [
+				{
+					"name": "Get Public Characteres",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://gateway.marvel.com/v1/public/characters?apikey={{keyMarvel}}&hash={{hashMarvel}}&ts=1",
+							"protocol": "http",
+							"host": [
+								"gateway",
+								"marvel",
+								"com"
+							],
+							"path": [
+								"v1",
+								"public",
+								"characters"
+							],
+							"query": [
+								{
+									"key": "apikey",
+									"value": "{{keyMarvel}}"
+								},
+								{
+									"key": "hash",
+									"value": "{{hashMarvel}}"
+								},
+								{
+									"key": "ts",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Comics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://gateway.marvel.com/v1/public/comics?apikey={{keyMarvel}}&hash={{hashMarvel}}&ts=1",
+							"protocol": "http",
+							"host": [
+								"gateway",
+								"marvel",
+								"com"
+							],
+							"path": [
+								"v1",
+								"public",
+								"comics"
+							],
+							"query": [
+								{
+									"key": "apikey",
+									"value": "{{keyMarvel}}"
+								},
+								{
+									"key": "hash",
+									"value": "{{hashMarvel}}"
+								},
+								{
+									"key": "ts",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Creators",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://gateway.marvel.com/v1/public/creators?apikey={{keyMarvel}}&hash={{hashMarvel}}&ts=1",
+							"protocol": "http",
+							"host": [
+								"gateway",
+								"marvel",
+								"com"
+							],
+							"path": [
+								"v1",
+								"public",
+								"creators"
+							],
+							"query": [
+								{
+									"key": "apikey",
+									"value": "{{keyMarvel}}"
+								},
+								{
+									"key": "hash",
+									"value": "{{hashMarvel}}"
+								},
+								{
+									"key": "ts",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Series",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://gateway.marvel.com/v1/public/series?apikey={{keyMarvel}}&hash={{hashMarvel}}&ts=1",
+							"protocol": "http",
+							"host": [
+								"gateway",
+								"marvel",
+								"com"
+							],
+							"path": [
+								"v1",
+								"public",
+								"series"
+							],
+							"query": [
+								{
+									"key": "apikey",
+									"value": "{{keyMarvel}}"
+								},
+								{
+									"key": "hash",
+									"value": "{{hashMarvel}}"
+								},
+								{
+									"key": "ts",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
